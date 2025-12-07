@@ -42,8 +42,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (typeof window.observeAuthState === "function") {
         observeAuthState(user => {
-            if (auth != null) {
-                document.getElementById("displayName").innerHTML = user.displayName;
+            if (user != null) {
+                console.log("signin");
+            } else {
+                console.log("signout");
             }
         });
     } else {
