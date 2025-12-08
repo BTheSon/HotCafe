@@ -1,4 +1,4 @@
-﻿namespace simplechat.Objects;
+﻿namespace HotCafe.Models;
 
 #pragma warning disable IDE1006
 #pragma warning disable CS8618

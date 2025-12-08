@@ -1,8 +1,9 @@
 ﻿using Microsoft.JSInterop;
-using simplechat.Objects;
 using System.Text;
+using System.Text.Json;
+using HotCafe.Models;
 
-namespace simplechat.Services;
+namespace HotCafe.Services;
 
 public class FirebaseDatabaseService {
 
@@ -122,6 +123,19 @@ public class FirebaseDatabaseService {
 		var result = await data.Content.ReadAsStringAsync();
 
 		return result != "null" && !string.IsNullOrWhiteSpace(result);
+	}
+
+	public static async Task<string> Get(string path) {
+		string url = $"{BASE_URL}/{path}.json";
+		var response = await httpClient.GetAsync(url);
+
+		if (!response.IsSuccessStatusCode) {
+			return "";
+		}
+
+		var result = await response.Content.ReadAsStringAsync();
+
+		return result;
 	}
 
 	private static async Task Put(Serializable model, string parent, string key) {

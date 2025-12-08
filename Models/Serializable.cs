@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace simplechat.Objects;
+namespace HotCafe.Models;
 
 public abstract class Serializable {
 
