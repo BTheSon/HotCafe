@@ -4,6 +4,9 @@
 #pragma warning disable CS8618
 public class RoomMember : Serializable {
 
+	public string userId {
+		get; set;
+	}
 	public long joinedAt {
 		get; set;
 	}

@@ -4,6 +4,9 @@
 #pragma warning disable CS8618
 public class User : Serializable {
 
+	public string userId {
+		get; set;
+	}
 	public string displayName {
 		get; set;
 	}

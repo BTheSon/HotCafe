@@ -25,8 +25,12 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task CreateWithoutSpecificKey(Serializable model, string parent) {
-		await httpClient.PostAsync($"{BASE_URL}/{parent}.json", new StringContent(model.ToJson(), Encoding.UTF8, "application/json"));
+	public static async Task<bool> CreateWithoutSpecificKey(Serializable model, string parent) {
+		HttpResponseMessage result = await httpClient.PostAsync($"{BASE_URL}/{parent}.json", new StringContent(model.ToJson(), Encoding.UTF8, "application/json"));
+		if (!result.IsSuccessStatusCode) {
+			return false;
+		}
+		return true;
 	}
 
 	/// <summary>
@@ -41,12 +45,12 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task CreateWithSpecificKey(Serializable model, string parent, string key) {
+	public static async Task<bool> CreateWithSpecificKey(Serializable model, string parent, string key) {
 		if (await IsExists(parent + "/" + key)) {
-			return;
+			return false;
 		}
 
-		await Put(model, parent, key);
+		return await Put(model, parent, key);
 	}
 
 	/// <summary>
@@ -63,8 +67,8 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task UpdateAll(Serializable model, string parent, string key) {
-		await Put(model, parent, key);
+	public static async Task<bool> UpdateAll(Serializable model, string parent, string key) {
+		return await Put(model, parent, key);
 	}
 
 	/// <summary>
@@ -81,8 +85,8 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task UpdatePart(Serializable model, string parent, string key) {
-		await Patch(model, parent, key);
+	public static async Task<bool> UpdatePart(Serializable model, string parent, string key) {
+		return await Patch(model, parent, key);
 	}
 
 	/// <summary>
@@ -96,8 +100,12 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task Delete(string parent, string key) {
-		await httpClient.DeleteAsync($"{BASE_URL}/{parent}/{key}.json");
+	public static async Task<bool> Delete(string parent, string key) {
+		HttpResponseMessage result = await httpClient.DeleteAsync($"{BASE_URL}/{parent}/{key}.json");
+		if (!result.IsSuccessStatusCode) {
+			return false;
+		}
+		return true;
 	}
 
 	/// <summary>
@@ -138,12 +146,20 @@ public class FirebaseDatabaseService {
 		return result;
 	}
 
-	private static async Task Put(Serializable model, string parent, string key) {
-		await httpClient.PutAsync($"{BASE_URL}/{parent}/{key}.json", new StringContent(model.ToJson(), Encoding.UTF8, "application/json"));
+	private static async Task<bool> Put(Serializable model, string parent, string key) {
+		HttpResponseMessage result = await httpClient.PutAsync($"{BASE_URL}/{parent}/{key}.json", new StringContent(model.ToJson(), Encoding.UTF8, "application/json"));
+		if (!result.IsSuccessStatusCode) {
+			return false;
+		}
+		return true;
 	}
 
-	private static async Task Patch(Serializable model, string parent, string key) {
-		await httpClient.PatchAsync($"{BASE_URL}/{parent}/{key}.json", new StringContent(model.ToJson(), Encoding.UTF8, "application/json"));
+	private static async Task<bool> Patch(Serializable model, string parent, string key) {
+		HttpResponseMessage result =  await httpClient.PatchAsync($"{BASE_URL}/{parent}/{key}.json", new StringContent(model.ToJson(), Encoding.UTF8, "application/json"));
+		if (!result.IsSuccessStatusCode) {
+			return false;
+		}
+		return true;
 	}
 
 }

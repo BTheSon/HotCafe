@@ -4,6 +4,9 @@
 #pragma warning disable CS8618
 public class Message : Serializable {
 
+	public string messageId {
+		get; set;
+	}
 	public string senderId {
 		get; set;
 	}

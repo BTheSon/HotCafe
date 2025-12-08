@@ -4,6 +4,9 @@
 #pragma warning disable CS8618
 public class Room : Serializable {
 
+	public string roomId {
+		get; set;
+	}
 	public string name {
 		get; set;
 	}
@@ -11,9 +14,6 @@ public class Room : Serializable {
 		get; set;
 	}
 	public string ownerId {
-		get; set;
-	}
-	public bool isPrivate {
 		get; set;
 	}
 	public long createdAt {
