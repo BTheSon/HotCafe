@@ -6,10 +6,9 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				userId: "userId_1",
+				userId: "userId_6",
 				displayName: "Bảo",
-				email: "nttb749@gmail.com",
-				createdAt: 0
+				email: "nttb749@gmail.com"
 			})
 		})
 			.then(res => res.json())
@@ -60,7 +59,7 @@
 	}
 }
 
-//Api.add_user();
+Api.add_user();
 //Api.get_user();
 //Api.add_message();
-Api.get_message_list();
+//Api.get_message_list();

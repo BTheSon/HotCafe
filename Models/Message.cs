@@ -1,4 +1,6 @@
-﻿namespace HotCafe.Models;
+﻿using HotCafe.Utils;
+
+namespace HotCafe.Models;
 
 #pragma warning disable IDE1006
 #pragma warning disable CS8618
@@ -14,7 +16,7 @@ public class Message : Serializable {
 		get; set;
 	}
 	public long createdAt {
-		get; set;
-	}
+		get; private set;
+	} = DateTimeUtils.getCurrentTimestamp();
 
 }
