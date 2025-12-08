@@ -1,6 +1,6 @@
 ﻿// 1. Lấy đồ nghề từ biến toàn cục
 const { useState, useEffect, useCallback } = React;
-const { BrowserRouter, Route, Link, Switch } = ReactRouterDOM; // Cú pháp v5
+const { BrowserRouter, Route, Switch } = ReactRouterDOM; // Cú pháp v5
 
 // 4. App Chính
 function App() {
@@ -10,6 +10,7 @@ function App() {
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/auth" component={Auth} />
+                <Route path="/chat/:iđ" component={Chat} />
             </Switch>
         </BrowserRouter>
     );

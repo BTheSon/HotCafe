@@ -1,3 +1,5 @@
+const { useCallback } = React
+
 const firebaseConfig = {
     apiKey: "AIzaSyDwe6DIPlE8MiXwR9UarM6WjyphGBDlAb0",
     databaseURL: "https://dotnet-project-mvc-default-rtdb.firebaseio.com",
@@ -17,29 +19,22 @@ const { useHistory } = ReactRouterDOM
 
 function Auth({ className = "" }) {
     const history = useHistory();
-    const handleLogin = () => {
-        auth.signInWithPopup(provider)
-            .then(result => {
-                const user = result.user;
-                // Lưu vào localStorage
-                localStorage.setItem("user", JSON.stringify({
-                    uid: user.uid,
-                    displayName: user.displayName,
-                    email: user.email,
-                    photoURL: user.photoURL
-                }));
-                // Chuyển trang
-                history.push('/');
-            })
-            .catch(err => {
-                console.error("Login failed:", err);
-                alert("Login thất bại, thử lại!");
-            });
-    };
+
+    const handleLogin = useCallback(async () => {
+        try {
+            const result = await auth.signInWithPopup(provider);
+            console.log("okee");
+            console.log(result);
+            history.push("/");
+        } catch (err) {
+            console.error("Login failed:", err);
+            alert("Login thất bại, thử lại!");
+        }
+    }, []);
 
     return (
         <div className={className + " flex justify-center items-center h-screen"}>
-            <button title="Đăng nhập bằng Google" onClick={handleLogin} className="rounded-full flex items-center justify-center w-full max-w-xs px-4 py-2 bg-white border border-gray-300 rounded shadow hover:bg-gray-100 transition-colors">
+            <button title="Đăng nhập bằng Google" onClick={handleLogin} className="flex items-center justify-center w-full max-w-xs px-4 py-2 bg-white border border-gray-300 rounded shadow hover:bg-gray-100 transition-colors">
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 533.5 544.3">
                     <path d="M533.5 278.4c0-18.8-1.6-37-4.7-54.6H272v103.5h146.9c-6.3 34-25.2 62.9-53.8 82l87 67c50.8-46.9 80.4-115.8 80.4-197.9z" fill="#4285F4" />
                     <path d="M272 544.3c72.6 0 133.6-24 178.1-65.1l-87-67c-24.2 16.2-55 25.7-91.1 25.7-69.9 0-129.2-47.1-150.4-110.3l-89.3 69c44.7 88.3 137.7 148.7 239.7 148.7z" fill="#34A853" />
