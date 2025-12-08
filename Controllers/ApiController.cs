@@ -52,11 +52,11 @@ public class ApiController : Controller {
 	}
 
 	/// <summary>
-	/// Lấy thông tin của một <see cref="RoomMember"/> trong một <see cref="Room"/> cụ thể
+	/// Lấy thông tin của một <see cref="Member"/> trong một <see cref="Room"/> cụ thể
 	/// </summary>
 	/// <code>
 	/// 
-	/// fetch("/api/room-members/get", {
+	/// fetch("/api/rooms/members/get", {
 	///		method: "POST",
 	///		headers: {
 	///			"Content-Type": "application/json",
@@ -68,9 +68,9 @@ public class ApiController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("room-members/get")]
-	public async Task<string> GetRoomMember([FromHeader(Name = "room_id")] string room_id, [FromHeader(Name = "user_id")] string user_id) {
-		return await FirebaseDatabaseService.Get($"roomMembers/{room_id}/{user_id}");
+	[Route("rooms/members/get")]
+	public async Task<string> GetMember([FromHeader(Name = "room_id")] string room_id, [FromHeader(Name = "user_id")] string user_id) {
+		return await FirebaseDatabaseService.Get($"members/{room_id}/{user_id}");
 	}
 
 	/// <summary>
@@ -78,7 +78,7 @@ public class ApiController : Controller {
 	/// </summary>
 	/// <code>
 	/// 
-	/// fetch("/api/messages/get", {
+	/// fetch("/api/rooms/messages/get", {
 	///		method: "POST",
 	///		headers: {
 	///			"Content-Type": "application/json",
@@ -90,7 +90,7 @@ public class ApiController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("messages/get")]
+	[Route("rooms/messages/get")]
 	public async Task<string> GetMessage([FromHeader(Name = "room_id")] string room_id, [FromHeader(Name = "message_id")] string message_id) {
 		return await FirebaseDatabaseService.Get($"messages/{room_id}/{message_id}");
 	}
@@ -148,11 +148,11 @@ public class ApiController : Controller {
 	}
 
 	/// <summary>
-	/// Tạo một <see cref="RoomMember"/>
+	/// Tạo một <see cref="Member"/>
 	/// </summary>
 	/// <code>
 	/// 
-	/// fetch("/api/room-members/add", {
+	/// fetch("/api/rooms/members/add", {
 	///		method: "POST",
 	///		headers: {
 	///			"Content-Type": "application/json",
@@ -167,9 +167,9 @@ public class ApiController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("room-members/add")]
-	public async Task<bool> AddRoomMember([FromBody] RoomMember roomMember, [FromHeader(Name = "room_id")] string room_id) {
-		return await FirebaseDatabaseService.CreateWithSpecificKey(roomMember, $"roomMembers/{room_id}", roomMember.userId);
+	[Route("rooms/members/add")]
+	public async Task<bool> AddMember([FromBody] Member member, [FromHeader(Name = "room_id")] string room_id) {
+		return await FirebaseDatabaseService.CreateWithSpecificKey(member, $"members/{room_id}", member.userId);
 	}
 
 	/// <summary>
@@ -177,7 +177,7 @@ public class ApiController : Controller {
 	/// </summary>
 	/// <code>
 	/// 
-	/// fetch("/api/messages/add", {
+	/// fetch("/api/rooms/messages/add", {
 	///		method: "POST",
 	///		headers: {
 	///			"Content-Type": "application/json",
@@ -192,7 +192,7 @@ public class ApiController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("messages/add")]
+	[Route("rooms/messages/add")]
 	public async Task<bool> AddMessage([FromBody] Message message, [FromHeader(Name = "room_id")] string room_id) {
 		return await FirebaseDatabaseService.CreateWithSpecificKey(message, $"messages/{room_id}", message.messageId);
 	}
@@ -242,11 +242,11 @@ public class ApiController : Controller {
 	}
 
 	/// <summary>
-	/// Lấy danh sách tất cả <see cref="RoomMember"/> của một <see cref="Room"/>
+	/// Lấy danh sách tất cả <see cref="Member"/> của một <see cref="Room"/>
 	/// </summary>
 	/// <code>
 	/// 
-	/// fetch("/api/room-members/get-list", {
+	/// fetch("/api/rooms/members/get-list", {
 	///		method: "POST",
 	///		headers: {
 	///			"Content-Type": "application/json",
@@ -257,9 +257,9 @@ public class ApiController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("room-members/get-list")]
-	public async Task<string> GetRoomMemberList([FromHeader(Name = "room_id")] string room_id) {
-		return await FirebaseDatabaseService.Get($"roomMembers/{room_id}");
+	[Route("rooms/members/get-list")]
+	public async Task<string> GetMemberList([FromHeader(Name = "room_id")] string room_id) {
+		return await FirebaseDatabaseService.Get($"members/{room_id}");
 	}
 
 	/// <summary>
@@ -267,7 +267,7 @@ public class ApiController : Controller {
 	/// </summary>
 	/// <code>
 	/// 
-	/// fetch("/api/messages/get-list", {
+	/// fetch("/api/rooms/messages/get-list", {
 	///		method: "POST",
 	///		headers: {
 	///			"Content-Type": "application/json",
@@ -278,7 +278,7 @@ public class ApiController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("messages/get-list")]
+	[Route("rooms/messages/get-list")]
 	public async Task<string> GetMessageList([FromHeader(Name = "room_id")] string room_id) {
 		return await FirebaseDatabaseService.Get($"messages/{room_id}");
 	}

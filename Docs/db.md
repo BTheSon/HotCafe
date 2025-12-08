@@ -31,7 +31,7 @@ root
 │         ├── createdAt: 1701872250
 │         └── memberCount: 3
 │
-├── roomMembers
+├── members
 │   ├── <roomId_1>
 │   │     ├── <userId_1>
 │   │     │     ├── userId: "userId_1"
