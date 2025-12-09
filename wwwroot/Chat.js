@@ -2,7 +2,7 @@ const { useEffect, useState, useRef } = React;
 const { onChildAdded, ref, onValue } = window.realtimeDB;
 const { auth } = window.firebase; // Giả sử auth cũng nằm trong namespace global nếu dùng CDN
 
-function MessageComponent({ senderId, displayName, text, createdAt, isMe }) {
+function MessageComponent({ senderId, displayName, photoURL, text, createdAt, isMe }) {
     const dateDisplay = createdAt
         ? new Date(createdAt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         : "";
@@ -10,17 +10,20 @@ function MessageComponent({ senderId, displayName, text, createdAt, isMe }) {
     const bgClass = isMe ? "bg-gray-100 border-gray-300" : "bg-white border-gray-200";
 
     return (
-        <div className={`mb-3 p-3 border rounded-md ${bgClass}`}>
-            <div className="flex justify-between items-baseline mb-1">
-                {/* Ưu tiên hiển thị displayName, nếu chưa load xong thì hiện senderId */}
-                <span className="font-semibold text-gray-700 text-sm">
-                    {displayName || senderId}
-                </span>
-                <span className="text-xs text-gray-400 font-mono">{dateDisplay}</span>
+        <div className={`mb-3 p-3 border rounded-md flex flex-row ${bgClass}`}>
+            <img className="mr-3 rounded-full" src={photoURL} height="50" width="50"/>
+            <div className="w-full">
+                <div className="flex justify-between items-baseline mb-1">
+                    {/* Ưu tiên hiển thị displayName, nếu chưa load xong thì hiện senderId */}
+                    <span className="font-semibold text-gray-700 text-sm">
+                        {displayName || senderId}
+                    </span>
+                    <span className="text-xs text-gray-400 font-mono">{dateDisplay}</span>
+                </div>
+                <p className="text-gray-600 text-base leading-relaxed break-words">
+                    {text}
+                </p>
             </div>
-            <p className="text-gray-600 text-base leading-relaxed break-words">
-                {text}
-            </p>
         </div>
     );
 }
@@ -167,6 +170,7 @@ function Chat({ match }) {
 
                             // TRUYỀN DATA: Lấy displayName từ usersCache
                             displayName={usersCache[item.senderId]?.displayName}
+                            photoURL={usersCache[item.senderId]?.photoURL}
 
                             text={item.text}
                             createdAt={item.createdAt}

@@ -33,6 +33,7 @@ function Auth({ className = "" }) {
             	body: JSON.stringify({
                     userId: result.user.uid,
                     displayName: result.user.displayName,
+                    photoURL: result.user.photoURL,
                     email: result.user.email
             	})
             });

@@ -12,6 +12,9 @@ public class User : Serializable {
 	public string displayName {
 		get; set;
 	}
+	public string photoURL {
+		get; set;
+	}
 	public string email {
 		get; set;
 	}
