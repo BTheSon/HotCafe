@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HotCafe.Controllers;
 
-[Route("/api/rooms/messages")]
+[Route("api/rooms/messages")]
 public class MessageController : Controller {
 
 	/// <summary>
@@ -27,7 +27,7 @@ public class MessageController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("/add")]
+	[Route("add")]
 	public async Task<bool> AddMessage([FromBody] Message message, [FromHeader(Name = "room_id")] string room_id) {
 		return await FirebaseDatabaseService.CreateWithSpecificKey(message, $"messages/{room_id}", message.messageId);
 	}
@@ -49,7 +49,7 @@ public class MessageController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("/get")]
+	[Route("get")]
 	public async Task<string> GetMessage([FromHeader(Name = "room_id")] string room_id, [FromHeader(Name = "message_id")] string message_id) {
 		return await FirebaseDatabaseService.Get($"messages/{room_id}/{message_id}");
 	}
@@ -70,7 +70,7 @@ public class MessageController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("/get-list")]
+	[Route("get-list")]
 	public async Task<string> GetMessageList([FromHeader(Name = "room_id")] string room_id) {
 		return await FirebaseDatabaseService.Get($"messages/{room_id}");
 	}

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HotCafe.Controllers;
 
-[Route("/api/users")]
+[Route("api/users")]
 public class UserController : Controller {
 
 	/// <summary>
@@ -26,7 +26,7 @@ public class UserController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("/add")]
+	[Route("add")]
 	public async Task<bool> AddUser([FromBody] User user) {
 		return await FirebaseDatabaseService.CreateWithSpecificKey(user, "users", user.userId);
 	}
@@ -47,7 +47,7 @@ public class UserController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("/get")]
+	[Route("get")]
 	public async Task<string> GetUser([FromHeader(Name = "user_id")] string user_id) {
 		return await FirebaseDatabaseService.Get($"users/{user_id}");
 	}
@@ -67,7 +67,7 @@ public class UserController : Controller {
 	/// </code>
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
-	[Route("/get-list")]
+	[Route("get-list")]
 	public async Task<string> GetUserList() {
 		return await FirebaseDatabaseService.Get($"users");
 	}

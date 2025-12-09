@@ -25,6 +25,17 @@ function Auth({ className = "" }) {
             const result = await auth.signInWithPopup(provider);
             console.log("okee");
             console.log(result);
+            fetch("/api/users/add", {
+            	method: "POST",
+            	headers: {
+            		"Content-Type": "application/json"
+            	},
+            	body: JSON.stringify({
+                    userId: result.user.uid,
+                    displayName: result.user.displayName,
+                    email: result.user.email
+            	})
+            });
             history.push("/");
         } catch (err) {
             console.error("Login failed:", err);
