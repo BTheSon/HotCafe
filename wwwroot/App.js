@@ -10,7 +10,7 @@ function App() {
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/auth" component={Auth} />
-                <Route path="/chat/:iđ" component={Chat} />
+                <Route path="/chat/:id" component={Chat} />
             </Switch>
         </BrowserRouter>
     );
