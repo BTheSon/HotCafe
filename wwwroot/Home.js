@@ -2,6 +2,9 @@
 const { useHistory } = ReactRouterDOM
 const { useEffect, useCallback } = React
 const { googleSignOut, observeAuthState } = window;
+
+const generateId = (prefix) => `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
 function Home() {
     const history = useHistory();
     const [user, setUser] = useState(null);
@@ -24,14 +27,77 @@ function Home() {
         googleSignOut();
         history.push('/auth');
     }, []);
-    const handleJoinRoom = useCallback(() => { }, [])
-    const handleCreateRoom = useCallback(() => { 
-        try {
-            fetch()
-        }catch(err){
 
+    const handleJoinRoom = useCallback(() => {
+
+    }, [])
+
+    const handleCreateRoom = useCallback(async () => {
+        // 1. Kiểm tra đầu vào
+        if (!user) {
+            alert("Bạn cần đăng nhập để tạo phòng!");
+            return;
         }
-    }, []);
+        if (!inpCreate.trim()) {
+            alert("Vui lòng nhập mã phòng (Invite Code)!");
+            return;
+        }
+
+        try {
+            const currentTime = Date.now();
+            // const newRoomId = generateId("room"); // Tạo ID phòng duy nhất
+
+            // 2. Gọi API tạo phòng (API 2.2)
+            // Lưu ý: Base URL là /api
+            const createRoomRes = await fetch("/api/rooms/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: `Phòng ${inpCreate}`, // Tạm lấy tên phòng theo mã, hoặc bạn có thể thêm input nhập tên
+                    code: inpCreate,            // Mã tham gia từ input
+                    ownerId: user.uid,          // ID người dùng từ Firebase Auth
+                    createdAt: currentTime,
+                    memberCount: 1
+                })
+            });
+
+            // API trả về true/false, cần parse json trước
+            const isCreated = await createRoomRes.json();
+
+            if (!isCreated) {
+                throw new Error("API trả về false (Không thể tạo phòng)");
+            }
+
+            // 3. (Tùy chọn nhưng khuyến nghị) Thêm người tạo vào danh sách Member với quyền admin (API 3.2)
+            // Vì API 2.2 chỉ tạo phòng, chưa chắc chắn backend đã tự insert owner vào bảng members
+            const addMemberRes = await fetch("/api/rooms/members/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "room_id": newRoomId
+                },
+                body: JSON.stringify({
+                    userId: user.uid,
+                    joinedAt: currentTime,
+                    role: "admin"
+                })
+            });
+
+            const isMemberAdded = await addMemberRes.json();
+
+            if (isCreated) {
+                alert("Tạo phòng thành công!");
+                // 4. Chuyển hướng người dùng vào phòng vừa tạo
+                history.push(`/chat/${newRoomId}`);
+            }
+
+        } catch (err) {
+            console.error("Lỗi tạo phòng:", err);
+            alert("Đã có lỗi xảy ra khi tạo phòng: " + err.message);
+        }
+    }, [user, inpCreate, history]);
 
     return (
         <div id="homepage" className="min-h-screen bg-gradient-to-br  to-indigo-100">
@@ -53,7 +119,7 @@ function Home() {
                             type="text"
                             placeholder="Nhập mã phòng"
                             value={inpJoin}
-                            onChange={(e)=>setInpJoin(e.target.value)}
+                            onChange={(e) => setInpJoin(e.target.value)}
                         />
                         <button
                             onClick={handleJoinRoom}
@@ -76,7 +142,7 @@ function Home() {
                             type="text"
                             placeholder="Nhập mã phòng"
                             value={inpCreate}
-                            onChange={(e)=>setInpCreate(e.target.value)}
+                            onChange={(e) => setInpCreate(e.target.value)}
                         />
                         <button
                             onClick={handleCreateRoom}
