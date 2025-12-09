@@ -35,7 +35,7 @@ function Home() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "room_id": "roomId_gay"
+                    "room_id": roomId
                 },
                 body: JSON.stringify({
                     "userId": user?.uid ?? auth.currentUser.uid,
