@@ -1,7 +1,7 @@
 
 const { useHistory } = ReactRouterDOM
 const { useEffect, useCallback } = React
-const { googleSignOut, observeAuthState } = window;
+const { googleSignOut, observeAuthState, auth } = window;
 
 const generateId = (prefix) => `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -28,9 +28,38 @@ function Home() {
         history.push('/auth');
     }, []);
 
-    const handleJoinRoom = useCallback(() => {
+    const handleJoinRoom = useCallback(async () => {
+        try {
+            const roomId = "roomId_" + inpJoin;
+            const result = await fetch("/api/rooms/members/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "room_id": "roomId_gay"
+                },
+                body: JSON.stringify({
+                    "userId": user?.uid ?? auth.currentUser.uid,
+                    "role": "member"
+                })
+            });
 
-    }, [])
+            if (!result.ok) {
+                throw new Error(result.err);
+            }
+            const data = await result.json();
+            if ("error_message" in data) {
+                alert(data.error_message);
+                return;
+            } 
+            if ("really_on_room" in data) {
+                history.push(`/chat/${roomId}`);
+                return;
+            }
+            history.push(`/chat/${roomId}`);
+        } catch (err) {
+            console.error(err);
+        }
+    }, [inpJoin, user, history])
 
     const handleCreateRoom = useCallback(async () => {
         if (!user) {
@@ -82,7 +111,7 @@ function Home() {
 
             const isMemberAdded = await addMemberRes.json();
 
-            if (isMemberAdded == "") {
+            if (isMemberAdded != null) {
                 alert("Tạo phòng thành công!");
                 history.push(`/chat/${isCreated.roomId}`);
             }

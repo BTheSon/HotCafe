@@ -1,6 +1,6 @@
 ﻿import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { getDatabase, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
 import {
 	ref as dbRef,
@@ -42,7 +42,15 @@ export function set(refNode, value) {
 }
 
 
-
+/**
+ * 
+ * 
+onChildAdded(ref('users'), (data) => {
+	
+});
+ * 
+ * 
+ */
 export function onChildAdded(refNode, callback) {
 	return dbOnChildAdded(refNode, callback);
 }
@@ -61,3 +69,12 @@ export function onChildMoved(refNode, callback) {
 
 export { app, auth, db };
 export default { app, auth, db };
+
+window.realtimeDB = {
+	onValue,
+	ref,
+	onChildAdded,
+	onChildChanged,
+	onChildRemoved,
+	onChildMoved
+}

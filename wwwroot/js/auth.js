@@ -56,3 +56,4 @@ window.addEventListener("DOMContentLoaded", () => {
 window.googleSignIn = googleSignIn;
 window.googleSignOut = googleSignOut;
 window.observeAuthState = observeAuthState;
+window.auth = auth;
