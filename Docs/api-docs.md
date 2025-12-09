@@ -1,50 +1,46 @@
-## Mục Lục (Table of Contents)
+# 📚 HotCafe API Documentation
 
-* [**1.Users (Người dùng)**](#1--users-người-dùng)
+* **Base URL:** `/api`
+* **Content-Type:** `application/json`
+* **Time format:** Các trường thời gian (`createdAt`, `joinedAt`) sử dụng kiểu `long` (Unix Timestamp - mili-giây).
+
+---
+
+## 📖 Mục Lục (Table of Contents)
+
+* [**1. 👤 Users (Người dùng)**](#1--users-người-dùng)
     * [1.1. Lấy thông tin User (Get User)](#11-lấy-thông-tin-user)
     * [1.2. Tạo User mới (Add User)](#12-tạo-user-mới)
     * [1.3. Lấy danh sách Users (Get List)](#13-lấy-danh-sách-users)
-* [**2.Rooms (Phòng chat)**](#2--rooms-phòng-chat)
+* [**2. 🏠 Rooms (Phòng chat)**](#2--rooms-phòng-chat)
     * [2.1. Lấy thông tin Room (Get Room)](#21-lấy-thông-tin-room)
     * [2.2. Tạo Room mới (Add Room)](#22-tạo-room-mới)
     * [2.3. Lấy danh sách Rooms (Get List)](#23-lấy-danh-sách-rooms)
-* [**3. Members (Thành viên)**](#3--members-thành-viên)
+* [**3. 👥 Members (Thành viên)**](#3--members-thành-viên)
     * [3.1. Lấy thông tin Member (Get Member)](#31-lấy-thông-tin-member)
     * [3.2. Thêm Member vào Room (Add Member)](#32-thêm-member-vào-room)
     * [3.3. Lấy danh sách Members (Get List)](#33-lấy-danh-sách-members)
-* [**4. Messages (Tin nhắn)**](#4--messages-tin-nhắn)
+* [**4. 💬 Messages (Tin nhắn)**](#4--messages-tin-nhắn)
     * [4.1. Lấy thông tin Message (Get Message)](#41-lấy-thông-tin-message)
     * [4.2. Gửi Message (Add Message)](#42-gửi-message-thêm-tin-nhắn)
     * [4.3. Lấy danh sách Messages (Get List)](#43-lấy-danh-sách-messages)
 
 ---
 
-# API Documentation
-
-Tài liệu hướng dẫn sử dụng API cho hệ thống HotCafe.
-
-  * **Base URL:** `/api`
-  * **Content-Type:** `application/json`
-  * **Time format:** Các trường thời gian (`createdAt`, `joinedAt`) sử dụng kiểu `long` (Unix Timestamp - mili-giây hoặc giây tùy logic server).
-
-## 1\. Users (Người dùng)
+## 1. 👤 Users (Người dùng)
 
 ### 1.1. Lấy thông tin User
-
 Lấy chi tiết thông tin của một người dùng dựa trên `user_id`.
 
-  * **URL:** `/users/get`
-  * **Method:** `POST`
-  * **Headers:**
+* **Endpoint:** `/users/get`
+* **Method:** `POST`
+* **Headers:**
 
 | Key       | Type   | Required | Description                         |
 |:----------|:-------|:---------|:------------------------------------|
 | `user_id` | string | **Yes**  | ID của người dùng cần lấy thông tin |
 
-  * **Example Request:**
-
-<!-- end list -->
-
+* **Example Request:**
 ```javascript
 fetch("/api/users/get", {
     method: "POST",
@@ -55,7 +51,7 @@ fetch("/api/users/get", {
 });
 ```
 
-  * **Success Response:**
+* **Success Response Example:**
 
 <!-- end list -->
 
@@ -72,7 +68,7 @@ fetch("/api/users/get", {
 
 Thêm một người dùng mới vào hệ thống.
 
-  * **URL:** `/users/add`
+  * **Endpoint:** `/users/add`
   * **Method:** `POST`
   * **Body (JSON):**
 
@@ -102,17 +98,17 @@ Thêm một người dùng mới vào hệ thống.
 
 Lấy toàn bộ danh sách người dùng trong hệ thống.
 
-  * **URL:** `/users/get-list`
+  * **Endpoint:** `/users/get-list`
   * **Method:** `POST`
-  * **Response:** Trả về một JSON Object chứa danh sách các users.
+  * **Response:** Trả về một JSON Object chứa danh sách tất cả users.
 
 -----
 
-## 2\. Rooms (Phòng chat)
+## 2\. 🏠 Rooms (Phòng chat)
 
 ### 2.1. Lấy thông tin Room
 
-  * **URL:** `/rooms/get`
+  * **Endpoint:** `/rooms/get`
   * **Method:** `POST`
   * **Headers:**
 
@@ -120,7 +116,7 @@ Lấy toàn bộ danh sách người dùng trong hệ thống.
 |:----------|:-------|:---------|:---------------------|
 | `room_id` | string | **Yes**  | ID của phòng cần lấy |
 
-  * **Success Response:**
+  * **Success Response Example:**
 
 <!-- end list -->
 
@@ -137,7 +133,7 @@ Lấy toàn bộ danh sách người dùng trong hệ thống.
 
 ### 2.2. Tạo Room mới
 
-  * **URL:** `/rooms/add`
+  * **Endpoint:** `/rooms/add`
   * **Method:** `POST`
   * **Body (JSON):**
 
@@ -169,19 +165,19 @@ Lấy toàn bộ danh sách người dùng trong hệ thống.
 
 ### 2.3. Lấy danh sách Rooms
 
-  * **URL:** `/rooms/get-list`
+  * **Endpoint:** `/rooms/get-list`
   * **Method:** `POST`
   * **Response:** JSON Object chứa danh sách tất cả các phòng.
 
 -----
 
-## 3\. Members (Thành viên)
+## 3\. 👥 Members (Thành viên)
 
 ### 3.1. Lấy thông tin Member
 
 Kiểm tra thông tin một thành viên cụ thể trong một phòng.
 
-  * **URL:** `/rooms/members/get`
+  * **Endpoint:** `/rooms/members/get`
   * **Method:** `POST`
   * **Headers:**
 
@@ -190,7 +186,7 @@ Kiểm tra thông tin một thành viên cụ thể trong một phòng.
 | `room_id` | string | **Yes**  | ID của phòng             |
 | `user_id` | string | **Yes**  | ID của user cần kiểm tra |
 
-  * **Success Response:**
+  * **Success Response Example:**
 
 <!-- end list -->
 
@@ -204,7 +200,7 @@ Kiểm tra thông tin một thành viên cụ thể trong một phòng.
 
 ### 3.2. Thêm Member vào Room
 
-  * **URL:** `/rooms/members/add`
+  * **Endpoint:** `/rooms/members/add`
   * **Method:** `POST`
   * **Headers:**
       * `room_id`: ID của phòng muốn thêm thành viên.
@@ -241,7 +237,7 @@ fetch("/api/rooms/members/add", {
 
 Lấy tất cả thành viên của một phòng cụ thể.
 
-  * **URL:** `/rooms/members/get-list`
+  * **Endpoint:** `/rooms/members/get-list`
   * **Method:** `POST`
   * **Headers:**
       * `room_id`: ID của phòng.
@@ -249,11 +245,11 @@ Lấy tất cả thành viên của một phòng cụ thể.
 
 -----
 
-## 4\. Messages (Tin nhắn)
+## 4\. 💬 Messages (Tin nhắn)
 
 ### 4.1. Lấy thông tin Message
 
-  * **URL:** `/rooms/messages/get`
+  * **Endpoint:** `/rooms/messages/get`
   * **Method:** `POST`
   * **Headers:**
 
@@ -262,7 +258,7 @@ Lấy tất cả thành viên của một phòng cụ thể.
 | `room_id`    | string | **Yes**  | ID của phòng chứa tin nhắn |
 | `message_id` | string | **Yes**  | ID của tin nhắn            |
 
-  * **Success Response:**
+  * **Success Response Example:**
 
 <!-- end list -->
 
@@ -277,7 +273,7 @@ Lấy tất cả thành viên của một phòng cụ thể.
 
 ### 4.2. Gửi Message (Thêm tin nhắn)
 
-  * **URL:** `/rooms/messages/add`
+  * **Endpoint:** `/rooms/messages/add`
   * **Method:** `POST`
   * **Headers:**
       * `room_id`: ID của phòng chat.
@@ -316,10 +312,8 @@ fetch("/api/rooms/messages/add", {
 
 Lấy lịch sử tin nhắn của một phòng.
 
-  * **URL:** `/rooms/messages/get-list`
+  * **Endpoint:** `/rooms/messages/get-list`
   * **Method:** `POST`
   * **Headers:**
       * `room_id`: ID của phòng.
   * **Response:** JSON Object chứa danh sách tin nhắn.
-
------
