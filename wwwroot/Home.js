@@ -33,64 +33,58 @@ function Home() {
     }, [])
 
     const handleCreateRoom = useCallback(async () => {
-        // 1. Kiểm tra đầu vào
         if (!user) {
             alert("Bạn cần đăng nhập để tạo phòng!");
             return;
         }
         if (!inpCreate.trim()) {
-            alert("Vui lòng nhập mã phòng (Invite Code)!");
+            alert("Vui lòng nhập mã phòng!");
             return;
         }
 
         try {
-            const currentTime = Date.now();
-            // const newRoomId = generateId("room"); // Tạo ID phòng duy nhất
+            //const currentTime = Date.now();
 
-            // 2. Gọi API tạo phòng (API 2.2)
-            // Lưu ý: Base URL là /api
+            const roomId = `roomId_${inpCreate}`;
+
             const createRoomRes = await fetch("/api/rooms/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name: `Phòng ${inpCreate}`, // Tạm lấy tên phòng theo mã, hoặc bạn có thể thêm input nhập tên
-                    code: inpCreate,            // Mã tham gia từ input
-                    ownerId: user.uid,          // ID người dùng từ Firebase Auth
-                    createdAt: currentTime,
+                    roomId: roomId,
+                    name: `Phòng ${inpCreate}`,
+                    code: inpCreate,
+                    ownerId: user.uid,
                     memberCount: 1
                 })
             });
 
-            // API trả về true/false, cần parse json trước
             const isCreated = await createRoomRes.json();
 
-            if (!isCreated) {
-                throw new Error("API trả về false (Không thể tạo phòng)");
+            if (isCreated.error_message != null) {
+                alert(isCreated.error_message);
+                //throw new Error("Không thể tạo phòng!");
             }
 
-            // 3. (Tùy chọn nhưng khuyến nghị) Thêm người tạo vào danh sách Member với quyền admin (API 3.2)
-            // Vì API 2.2 chỉ tạo phòng, chưa chắc chắn backend đã tự insert owner vào bảng members
             const addMemberRes = await fetch("/api/rooms/members/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "room_id": newRoomId
+                    "room_id": roomId
                 },
                 body: JSON.stringify({
                     userId: user.uid,
-                    joinedAt: currentTime,
                     role: "admin"
                 })
             });
 
             const isMemberAdded = await addMemberRes.json();
 
-            if (isCreated) {
+            if (isMemberAdded == "") {
                 alert("Tạo phòng thành công!");
-                // 4. Chuyển hướng người dùng vào phòng vừa tạo
-                history.push(`/chat/${newRoomId}`);
+                history.push(`/chat/${isCreated.roomId}`);
             }
 
         } catch (err) {
@@ -108,11 +102,14 @@ function Home() {
             </div>
             <div id="body" className="flex flex-col justify-center items-center h-screen -mt-20">
                 <div className="text-center mb-8">
+                    <div className="flex justify-center items-center mb-7">
+                        <img className="rounded-full" width="150" height="150" src={user?.photoURL}></img>
+                    </div>
                     <h1 className="text-3xl font-bold text-gray-800">
                         Xin chào, {user?.displayName || "Khách"}
                     </h1>
                 </div>
-                <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
+                <div className="bg-white rounded-lg shadow-md border-2 p-8 w-full max-w-md">
                     <div id="form-joinroom" className="mb-6">
                         <input
                             className="w-full px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3"

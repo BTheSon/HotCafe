@@ -27,7 +27,7 @@ public class UserController : Controller {
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
 	[Route("add")]
-	public async Task<bool> AddUser([FromBody] User user) {
+	public async Task<string> AddUser([FromBody] User user) {
 		return await FirebaseDatabaseService.CreateWithSpecificKey(user, "users", user.userId);
 	}
 

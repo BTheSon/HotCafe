@@ -27,7 +27,8 @@ public class RoomController : Controller {
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
 	[Route("add")]
-	public async Task<bool> AddRoom([FromBody] Room room) {
+	public async Task<string> AddRoom([FromBody] Room room) {
+		//room.roomId = room.createdAt.ToString();
 		return await FirebaseDatabaseService.CreateWithSpecificKey(room, "rooms", room.roomId);
 	}
 

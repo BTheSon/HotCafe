@@ -28,7 +28,7 @@ public class MemberController : Controller {
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
 	[Route("add")]
-	public async Task<bool> AddMember([FromBody] Member member, [FromHeader(Name = "room_id")] string room_id) {
+	public async Task<string> AddMember([FromBody] Member member, [FromHeader(Name = "room_id")] string room_id) {
 		return await FirebaseDatabaseService.CreateWithSpecificKey(member, $"members/{room_id}", member.userId);
 	}
 

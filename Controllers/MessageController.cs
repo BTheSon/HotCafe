@@ -28,7 +28,7 @@ public class MessageController : Controller {
 	/// <returns>Chuỗi json</returns>
 	[HttpPost]
 	[Route("add")]
-	public async Task<bool> AddMessage([FromBody] Message message, [FromHeader(Name = "room_id")] string room_id) {
+	public async Task<string> AddMessage([FromBody] Message message, [FromHeader(Name = "room_id")] string room_id) {
 		return await FirebaseDatabaseService.CreateWithSpecificKey(message, $"messages/{room_id}", message.messageId);
 	}
 

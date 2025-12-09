@@ -7,6 +7,13 @@ namespace HotCafe.Services;
 
 public class FirebaseDatabaseService {
 
+	private static string ProcessError(string error_message) {
+		object obj = new {
+			error_message = error_message
+		};
+		return JsonSerializer.Serialize(obj);
+	}
+
 	private static readonly HttpClient httpClient = new();
 
 	/// <summary>
@@ -25,12 +32,12 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task<bool> CreateWithoutSpecificKey(Serializable model, string parent) {
+	public static async Task<string> CreateWithoutSpecificKey(Serializable model, string parent) {
 		HttpResponseMessage result = await httpClient.PostAsync($"{BASE_URL}/{parent}.json", new StringContent(model.ToJson(), Encoding.UTF8, "application/json"));
 		if (!result.IsSuccessStatusCode) {
-			return false;
+			return ProcessError("Có lỗi xảy ra!");
 		}
-		return true;
+		return await result.Content.ReadAsStringAsync();
 	}
 
 	/// <summary>
@@ -45,9 +52,12 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task<bool> CreateWithSpecificKey(Serializable model, string parent, string key) {
+	public static async Task<string> CreateWithSpecificKey(Serializable model, string parent, string key) {
 		if (await IsExists(parent + "/" + key)) {
-			return false;
+			if (model is Room) {
+				return ProcessError("Phòng này đã tồn tại!");
+			}
+			return ProcessError("Có lỗi xảy ra!");
 		}
 
 		return await Put(model, parent, key);
@@ -67,7 +77,7 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task<bool> UpdateAll(Serializable model, string parent, string key) {
+	public static async Task<string> UpdateAll(Serializable model, string parent, string key) {
 		return await Put(model, parent, key);
 	}
 
@@ -85,7 +95,7 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task<bool> UpdatePart(Serializable model, string parent, string key) {
+	public static async Task<string> UpdatePart(Serializable model, string parent, string key) {
 		return await Patch(model, parent, key);
 	}
 
@@ -100,12 +110,12 @@ public class FirebaseDatabaseService {
 	///       ├─── name: "Thiên Bảo"
 	///       └─── age: 20
 	/// </code>
-	public static async Task<bool> Delete(string parent, string key) {
+	public static async Task<string> Delete(string parent, string key) {
 		HttpResponseMessage result = await httpClient.DeleteAsync($"{BASE_URL}/{parent}/{key}.json");
 		if (!result.IsSuccessStatusCode) {
-			return false;
+			return ProcessError("Có lỗi xảy ra!");
 		}
-		return true;
+		return await result.Content.ReadAsStringAsync();
 	}
 
 	/// <summary>
@@ -138,7 +148,7 @@ public class FirebaseDatabaseService {
 		var response = await httpClient.GetAsync(url);
 
 		if (!response.IsSuccessStatusCode) {
-			return "";
+			return ProcessError("Có lỗi xảy ra!");
 		}
 
 		var result = await response.Content.ReadAsStringAsync();
@@ -146,20 +156,20 @@ public class FirebaseDatabaseService {
 		return result;
 	}
 
-	private static async Task<bool> Put(Serializable model, string parent, string key) {
+	private static async Task<string> Put(Serializable model, string parent, string key) {
 		HttpResponseMessage result = await httpClient.PutAsync($"{BASE_URL}/{parent}/{key}.json", new StringContent(model.ToJson(), Encoding.UTF8, "application/json"));
 		if (!result.IsSuccessStatusCode) {
-			return false;
+			return ProcessError("Có lỗi xảy ra!");
 		}
-		return true;
+		return await result.Content.ReadAsStringAsync();
 	}
 
-	private static async Task<bool> Patch(Serializable model, string parent, string key) {
+	private static async Task<string> Patch(Serializable model, string parent, string key) {
 		HttpResponseMessage result =  await httpClient.PatchAsync($"{BASE_URL}/{parent}/{key}.json", new StringContent(model.ToJson(), Encoding.UTF8, "application/json"));
 		if (!result.IsSuccessStatusCode) {
-			return false;
+			return ProcessError("Có lỗi xảy ra!");
 		}
-		return true;
+		return await result.Content.ReadAsStringAsync();
 	}
 
 }

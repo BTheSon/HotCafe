@@ -59,7 +59,7 @@
 	}
 }
 
-Api.add_user();
+//Api.add_user();
 //Api.get_user();
 //Api.add_message();
 //Api.get_message_list();
