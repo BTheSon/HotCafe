@@ -7,7 +7,7 @@ namespace HotCafe.Services;
 
 public class FirebaseDatabaseService {
 
-	private static string ProcessError(string error_message) {
+	public static string ProcessError(string error_message) {
 		object obj = new {
 			error_message = error_message
 		};

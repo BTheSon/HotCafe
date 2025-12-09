@@ -1,4 +1,5 @@
-﻿using HotCafe.Models;
+﻿using System.Text.Json;
+using HotCafe.Models;
 using HotCafe.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,17 @@ public class MemberController : Controller {
 	[HttpPost]
 	[Route("add")]
 	public async Task<string> AddMember([FromBody] Member member, [FromHeader(Name = "room_id")] string room_id) {
+		System.Console.WriteLine(room_id);
+		var IsExists = await FirebaseDatabaseService.IsExists($"rooms/{room_id}");
+		if (!IsExists)
+			return FirebaseDatabaseService.ProcessError("không tồn tại room");
+		
+		var IsExistsMemberInRoom = await FirebaseDatabaseService.IsExists($"members/{room_id}/{member.userId}");
+		if (IsExistsMemberInRoom)
+			return JsonSerializer.Serialize(new
+            {
+				really_on_room = "yes"
+            });
 		return await FirebaseDatabaseService.CreateWithSpecificKey(member, $"members/{room_id}", member.userId);
 	}
 
