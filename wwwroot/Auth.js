@@ -11,7 +11,6 @@ const firebaseConfig = {
     measurementId: "G-N27E3WWMRW"
 };
 
-// Khởi tạo Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
@@ -60,10 +59,8 @@ function Auth({ className = "" }) {
     );
 }
 
-// Theo dõi trạng thái đăng nhập để redirect nếu đã login
 auth.onAuthStateChanged(user => {
     if (user) {
-        // Nếu đã login, lưu localStorage và redirect
         localStorage.setItem("user", JSON.stringify({
             uid: user.uid,
             displayName: user.displayName,

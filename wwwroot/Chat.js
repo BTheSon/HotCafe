@@ -1,6 +1,6 @@
 const { useEffect, useState, useRef } = React;
 const { onChildAdded, ref, onValue } = window.realtimeDB;
-const { auth } = window.firebase; // Giả sử auth cũng nằm trong namespace global nếu dùng CDN
+const { auth } = window.firebase;
 
 function MessageComponent({ senderId, displayName, photoURL, text, createdAt, isMe }) {
     const dateDisplay = createdAt
@@ -14,7 +14,7 @@ function MessageComponent({ senderId, displayName, photoURL, text, createdAt, is
             <img className="mr-3 rounded-full" src={photoURL} height="50" width="50"/>
             <div className="w-full">
                 <div className="flex justify-between items-baseline mb-1">
-                    {/* Ưu tiên hiển thị displayName, nếu chưa load xong thì hiện senderId */}
+                    {}
                     <span className="font-semibold text-gray-700 text-sm">
                         {displayName || senderId}
                     </span>
@@ -35,11 +35,10 @@ function Chat({ match }) {
     const messagesEndRef = useRef(null);
 
     const [usersCache, setUsersCache] = useState({});
-    // Ref để theo dõi những ID nào đang được lắng nghe (tránh gọi onValue trùng lặp)
+
     const listeningUsersRef = useRef(new Set());
-    // 1. Auth check
+
     useEffect(() => {
-        // Lưu ý: window.auth hoặc firebase.auth() tùy vào cách bạn import
         const unsub = auth.onAuthStateChanged(u => {
             if (!u) {
                 alert('nguowif dung chua dang nhap');
@@ -54,22 +53,17 @@ function Chat({ match }) {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    // 2. Hàm gửi tin nhắn
     const handleSendMessage = async () => {
-        if (!inputValue.trim() || !user) return; // Check cả user để tránh lỗi
-
-        // Tạo ID tạm thời để UI mượt mà (nếu muốn giữ Optimistic UI)
-        // Tuy nhiên để tránh duplicate đơn giản nhất, ta sẽ KHÔNG setListMessager ở đây
-        // Mà đợi Firebase báo về.
+        if (!inputValue.trim() || !user) return;
 
         const newMessage = {
-            messageId: `msg_${Date.now()}_${user.uid}`, // Nên tạo ID ở client hoặc để server tạo
+            messageId: `msg_${Date.now()}_${user.uid}`,
             senderId: user.uid,
             text: inputValue,
             createdAt: Math.floor(Date.now() / 1000)
         };
 
-        setInputValue(""); // Xóa input ngay cho mượt
+        setInputValue("");
 
         try {
             await fetch("/api/rooms/messages/add", {
@@ -80,7 +74,6 @@ function Chat({ match }) {
                 },
                 body: JSON.stringify(newMessage)
             });
-            // Không cần setListMessager ở đây vì onChildAdded sẽ làm việc đó
         } catch (err) {
             console.error("Gửi lỗi:", err);
             alert("Gửi tin nhắn thất bại");
@@ -91,10 +84,8 @@ function Chat({ match }) {
         if (e.key === 'Enter') handleSendMessage();
     };
 
-    // 3. Fetch dữ liệu list tin nhắn ban đầu 
     useEffect(() => {
         const fetchData = async () => {
-            // ... code fetch API cũ của bạn ...
             try {
                 const response = await fetch("/api/rooms/messages/get-list", {
                     method: "POST",
@@ -108,7 +99,6 @@ function Chat({ match }) {
         fetchData();
     }, [roomId]);
 
-    // 4. Lắng nghe tin nhắn mới (Giữ nguyên logic Realtime message)
     useEffect(() => {
         const messagesRef = ref(`messages/${roomId}`);
         const unsub = onChildAdded(messagesRef, (snapshot) => {
@@ -122,37 +112,33 @@ function Chat({ match }) {
         });
         return () => { if (typeof unsub === 'function') unsub(); };
     }, [roomId]);
-    // Auto scroll
+
     useEffect(() => {
         scrollToBottom();
     }, [listMessager]);
-    //5. Tự động lấy User Info khi có senderId mới xuất hiện
+
     useEffect(() => {
-        // Duyệt qua tất cả tin nhắn để tìm các senderId
         listMessager.forEach(msg => {
             const uid = msg.senderId;
 
-            // Nếu UID này chưa có trong Cache VÀ chưa được lắng nghe
             if (!usersCache[uid] && !listeningUsersRef.current.has(uid)) {
 
-                // Đánh dấu là đang lắng nghe để không gọi lại lần sau
                 listeningUsersRef.current.add(uid);
 
-                // Gọi Realtime DB lấy thông tin user
                 onValue(ref(`users/${uid}`), (snapshot) => {
                     const userData = snapshot.val();
 
                     if (userData) {
-                        // Cập nhật vào cache
                         setUsersCache(prev => ({
                             ...prev,
-                            [uid]: userData // Lưu cả object user (gồm displayName, avatar...)
+                            [uid]: userData
                         }));
                     }
                 });
             }
         });
-    }, [listMessager]); // Chạy mỗi khi listMessager thay đổi (có tin nhắn mới)F
+    }, [listMessager]);
+
     return (
         <div className="flex flex-col h-screen bg-gray-50 text-gray-800 font-sans">
             <div className="h-14 border-b border-gray-200 bg-white flex items-center px-4 sticky top-0 z-10 shadow-sm">
